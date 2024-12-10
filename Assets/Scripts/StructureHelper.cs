@@ -55,4 +55,11 @@ public static class StructureHelper
         return new Vector2Int(Random.Range((int)(minX + (maxX - minX)*pointModifier), maxX),
             Random.Range((int)(minY + (maxY - minY) * pointModifier), maxY)); //might be minY - minY but leave for now and come back if broken
     }
+
+    
+}
+
+public enum RelativePosition
+{
+    Up, Down, Left, Right
 }
