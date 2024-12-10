@@ -32,11 +32,11 @@ public class CorridorNode : Node
             case RelativePosition.Down:
                 ProcessRoomUpOrDown(this.struct2, this.struct1);
                 break;
-            case RelativePosition.Left:
-                ProcessRoomLeftOrRight(this.struct2, this.struct1);
-                break;
             case RelativePosition.Right:
                 ProcessRoomLeftOrRight(this.struct1, this.struct2);
+                break;
+            case RelativePosition.Left:
+                ProcessRoomLeftOrRight(this.struct2, this.struct1);
                 break;
             default:
                 break;
@@ -121,12 +121,13 @@ public class CorridorNode : Node
         return -1;
     }
 
-    private void ProcessRoomLeftOrRight(Node struct2, Node struct1)
+    private void ProcessRoomLeftOrRight(Node struct1, Node struct2)
     {
-        Node rightStruct = null;
-        List<Node> rightStructChildren = StructureHelper.TraverseGraphToExtractLowestLeaves(struct2);
+        
         Node leftStruct = null;
         List<Node> leftStructChildren = StructureHelper.TraverseGraphToExtractLowestLeaves(struct1);
+        Node rightStruct = null;
+        List<Node> rightStructChildren = StructureHelper.TraverseGraphToExtractLowestLeaves(struct2);
 
         var sortedLeftStruct = leftStructChildren.OrderByDescending(child => child.TopRightAreaCorner.x).ToList();
         if (sortedLeftStruct.Count == 1)
@@ -147,7 +148,7 @@ public class CorridorNode : Node
                 leftStruct.BottomRightAreaCorner,
                 child.TopLeftAreaCorner,
                 child.BottomLeftAreaCorner
-                ) != -1).ToList();
+                ) != -1).OrderBy(child => child.BottomRightAreaCorner.x).ToList();
 
         if (possibleNeighboursInRightStruct.Count <= 0)
         {
@@ -201,7 +202,7 @@ public class CorridorNode : Node
     private RelativePosition CheckPosStruct2AgainstStruct1()
     {
         Vector2 middlePointStruct1Temp = ((Vector2)struct1.TopRightAreaCorner + struct1.BottomLeftAreaCorner) / 2;
-        Vector2 middlePointStruct2Temp = ((Vector2)struct1.TopRightAreaCorner + struct2.BottomLeftAreaCorner) / 2;
+        Vector2 middlePointStruct2Temp = ((Vector2)struct2.TopRightAreaCorner + struct2.BottomLeftAreaCorner) / 2;
         float angle = CalculateAngle(middlePointStruct1Temp, middlePointStruct2Temp);
 
         if ((angle < 45  && angle >= 0) || (angle > -45 && angle < 0))
