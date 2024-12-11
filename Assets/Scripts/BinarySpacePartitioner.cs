@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -41,7 +40,6 @@ public class BinarySpacePartitioner
                 SplitTheSpace(currentNode, listToReturn, roomLengthMin, roomWidthMin, graph);
             }
         }
-
         return listToReturn;
     }
 
@@ -122,7 +120,6 @@ public class BinarySpacePartitioner
             // Determine the x-coordinate for a vertical line
             coordinates = new Vector2Int(Random.Range(bottomLeftAreaCorner.x + roomWidthMin, topRightAreaCorner.x - roomWidthMin), 0);
         }
-
         return coordinates;
     }
 }

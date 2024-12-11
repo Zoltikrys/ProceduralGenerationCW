@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 public class CorridorGenerator
@@ -18,7 +17,7 @@ public class CorridorGenerator
         {
             var node = roomsToCheck.Dequeue(); // Get the next RoomNode
 
-            // Skip leaf nodes (nodes without children)
+            // Skip leaf nodes
             if (node.ChildrenNodeList.Count == 0)
             {
                 continue;
@@ -30,7 +29,6 @@ public class CorridorGenerator
             // Add the created corridor to the list
             corridorList.Add(corridor);
         }
-
-        return corridorList; // Return the list of corridors
+        return corridorList;
     }
 }
