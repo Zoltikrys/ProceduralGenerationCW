@@ -71,10 +71,20 @@ public class DungeonCreator : MonoBehaviour
         mesh.triangles = triangles;
 
         //setting default values of mesh
-        GameObject dungeonFloor = new GameObject("Mesh"+bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer));
+        GameObject dungeonFloor = new GameObject("Mesh"+bottomLeftCorner, typeof(MeshFilter), typeof(MeshRenderer), typeof(BoxCollider));
         dungeonFloor.transform.position = Vector3.zero; //set position to (0,0,0)
         dungeonFloor.transform.localScale = Vector3.one; //set scale to 1
         dungeonFloor.GetComponent<MeshFilter>().mesh = mesh;
         dungeonFloor.GetComponent<MeshRenderer>().material = material;
+
+        // Adjust the BoxCollider to fit the mesh
+        BoxCollider boxCollider = dungeonFloor.GetComponent<BoxCollider>();
+
+        // Calculate the center and size for the BoxCollider
+        Vector3 meshCenter = (bottomLeftVertex + topRightVertex) / 2f;
+        Vector3 meshSize = topRightVertex - bottomLeftVertex;
+
+        boxCollider.center = dungeonFloor.transform.InverseTransformPoint(meshCenter);
+        boxCollider.size = new Vector3(meshSize.x, 0.1f, meshSize.z); // Slight thickness for the Y axis
     }
 }
