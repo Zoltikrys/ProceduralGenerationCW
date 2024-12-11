@@ -354,14 +354,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dungeonWidth: 100
   dungeonLength: 100
-  roomWidthMin: 10
-  roomLengthMin: 10
-  maxIterations: 40
-  corridorWidth: 2
+  roomWidthMin: 25
+  roomLengthMin: 25
+  maxIterations: 2
+  corridorWidth: 10
   material: {fileID: 2100000, guid: ca3a4b89b90154e449a0336437540352, type: 2}
-  roomBottomCornerModifier: 0.1
-  roomTopCornerModifier: 0.9
+  roomBottomCornerModifier: 0.3
+  roomTopCornerModifier: 0.7
   roomOffset: 1
+  wallVert: {fileID: 8170439898038919574, guid: 5cc4d2a314de0b242a8c4dabd443462b, type: 3}
+  WallHorz: {fileID: 8170439898038919574, guid: 5cc4d2a314de0b242a8c4dabd443462b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

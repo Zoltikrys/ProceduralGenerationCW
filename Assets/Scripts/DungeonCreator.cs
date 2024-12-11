@@ -26,6 +26,13 @@ public class DungeonCreator : MonoBehaviour
     [Range(0, 2)]
     public int roomOffset;
 
+    public GameObject wallVert;
+    public GameObject WallHorz;
+
+    List<Vector3Int> possibleDoorVertPos;
+    List<Vector3Int> possibleDoorHorzPos;
+    List<Vector3Int> possibleWallHorzPos;
+    List<Vector3Int> possibleWallVertPos;
 
     // Start is called before the first frame update
     void Start()
@@ -37,10 +44,38 @@ public class DungeonCreator : MonoBehaviour
     {
         DungeonGenerator generator = new DungeonGenerator(dungeonWidth, dungeonLength);
         var listOfRooms = generator.CalculateDungeon(maxIterations, roomWidthMin, roomLengthMin, roomBottomCornerModifier, roomTopCornerModifier, roomOffset, corridorWidth);
+
+        GameObject wallParent = new GameObject("WallParent");
+        wallParent.transform.parent = transform;
+
+        possibleDoorVertPos = new List<Vector3Int>();
+        possibleDoorHorzPos = new List<Vector3Int>();
+        possibleWallHorzPos = new List<Vector3Int>();
+        possibleWallVertPos = new List<Vector3Int>();
+
         for (int i = 0; i < listOfRooms.Count; i++)
         {
             CreateMesh(listOfRooms[i].BottomLeftAreaCorner, listOfRooms[i].TopRightAreaCorner);
         }
+        CreateWalls(wallParent);
+    }
+
+    private void CreateWalls(GameObject wallParent)
+    {
+        foreach(var wallPos in possibleWallHorzPos)
+        {
+            CreateWall(wallParent, wallPos, WallHorz);
+        }
+        foreach(var wallPos in possibleWallVertPos)
+        {
+            CreateWall(wallParent, wallPos, wallVert);
+        }
+
+    }
+
+    private void CreateWall(GameObject wallParent, Vector3Int wallPos, GameObject wallPrefab)
+    {
+        Instantiate(wallPrefab, wallPos, Quaternion.identity, wallParent.transform);
     }
 
     private void CreateMesh(Vector2 bottomLeftCorner, Vector2 topRightCorner)
@@ -86,5 +121,43 @@ public class DungeonCreator : MonoBehaviour
 
         boxCollider.center = dungeonFloor.transform.InverseTransformPoint(meshCenter);
         boxCollider.size = new Vector3(meshSize.x, 0.1f, meshSize.z); // Slight thickness for the Y axis
+
+        for (int row = (int)bottomLeftVertex.x; row < (int)bottomRightVertex.x; row++)
+        {
+            var wallPos = new Vector3(row, 0, bottomLeftVertex.z);
+            AddWallPosToList(wallPos, possibleWallHorzPos, possibleDoorHorzPos);
+        }
+
+        for (int row = (int)topLeftVertex.x; row < (int)topRightCorner.x; row++)
+        {
+            var wallPos = new Vector3(row, 0, topRightVertex.z);
+            AddWallPosToList(wallPos, possibleWallHorzPos, possibleDoorHorzPos);
+        }
+
+        for (int col = (int)bottomLeftVertex.z; col < (int)topLeftVertex.z; col++)
+        {
+            var wallPos = new Vector3(bottomLeftVertex.x, 0, col);
+            AddWallPosToList(wallPos, possibleWallVertPos, possibleDoorVertPos);
+        }
+
+        for (int col = (int)bottomRightVertex.z; col < (int)topRightVertex.z; col++)
+        {
+            var wallPos = new Vector3(bottomRightVertex.x, 0, col);
+            AddWallPosToList(wallPos, possibleWallVertPos, possibleDoorVertPos);
+        }
+    }
+
+    private void AddWallPosToList(Vector3 wallPos, List<Vector3Int> wallList, List<Vector3Int> doorList)
+    {
+        Vector3Int point = Vector3Int.CeilToInt(wallPos);
+        if (wallList.Contains(point))
+        {
+            doorList.Add(point);
+            wallList.Remove(point);
+        }
+        else
+        {
+            wallList.Add(point);
+        }
     }
 }
