@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomEnemySpawner : MonoBehaviour
+public class RandomSpawner : MonoBehaviour
 {
     public GameObject prefab; //this is the object to respawn
     public int spawnCount = 10; // will spawn this many times
