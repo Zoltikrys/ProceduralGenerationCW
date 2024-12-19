@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class PlayerController : MonoBehaviour
 {
     private CharacterController controller;
@@ -9,6 +10,8 @@ public class PlayerController : MonoBehaviour
     private float playerSpeed = 2.0f;
     private float jumpHeight = 1.0f;
     private float gravityValue = -9.81f;
+
+    public Transform cameraTransform; // Assign the camera Transform in the Inspector
 
     private void Start()
     {
@@ -23,11 +26,26 @@ public class PlayerController : MonoBehaviour
             playerVelocity.y = 0f;
         }
 
-        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        controller.Move(move * Time.deltaTime * playerSpeed);
-
-        if (move != Vector3.zero)
+        // Get input for movement
+        Vector3 inputDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        if (inputDirection.magnitude >= 0.1f)
         {
+            // Calculate the movement direction relative to the camera
+            Vector3 cameraForward = cameraTransform.forward;
+            Vector3 cameraRight = cameraTransform.right;
+
+            // Flatten the camera's forward and right directions to ignore vertical tilt
+            cameraForward.y = 0f;
+            cameraRight.y = 0f;
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+
+            Vector3 move = cameraForward * inputDirection.z + cameraRight * inputDirection.x;
+
+            // Move the player
+            controller.Move(move * Time.deltaTime * playerSpeed);
+
+            // Rotate the player to face the movement direction
             gameObject.transform.forward = move;
         }
 
